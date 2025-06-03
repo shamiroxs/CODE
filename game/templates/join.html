@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Room: {{ code }}</h2>
+
+{% if not is_host %}
+<p>You have joined the room <strong>{{ code }}</strong>.</p>
+{% else %}
+<p>You are hosting room <strong>{{ code }}</strong>.</p>
+{% endif %}
+
+<h4>Players in Room:</h4>
+<ul id="player-list" class="list-group mb-3">
+    {% for player in players %}
+        <li class="list-group-item">{{ player.user.username }}</li>
+    {% empty %}
+        <li class="list-group-item">No players yet.</li>
+    {% endfor %}
+</ul>
+
+{% if not is_host %}
+<p>Waiting for host to start the game...</p>
+{% else %}
+<p id=hostmsg></p>
+{% endif %}
+
+<button id="start-game" class="btn btn-success">Start Game</button>
+
+<script>
+    const ROOM_CODE = "{{ code }}";
+</script>
+<script src="{% static 'lobby.js' %}"></script>
+
+{% endblock %}

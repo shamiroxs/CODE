@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block content %}
+<h3>Welcome, {{ player.user.username }}!</h3>
+<h2 class="text-center mb-4">Room Code: {{ room.code }}</h2>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <strong>Turn:</strong> 
+    </div>
+    <div id="timer" class="badge bg-warning text-dark p-2 fs-5">10</div>
+    <div>
+        <strong>Status:</strong> {{ room.status|capfirst }}
+    </div>
+</div>
+
+{% if player.has_won %}
+<div class="alert alert-success text-center fs-4">
+    🎉 Congratulations! You won the game!
+</div>
+{% endif %}
+
+<h4>Table Cards</h4>
+<div class="d-flex flex-wrap mb-4" id="table-cards">
+    {% for card in room.table_cards %}
+    <div class="card m-2 text-center p-3 selectable-card" data-card="{{ card }}">
+        <span class="fs-4">{{ card }}</span>
+    </div>
+    {% endfor %}
+</div>
+
+<h4>Your Hand</h4>
+<div class="d-flex flex-wrap" id="player-hand">
+    {% for card in player.hand %}
+    <div class="card m-2 text-center p-3 selectable-card" data-card="{{ card }}">
+        <span class="fs-4">{{ card }}</span>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="text-center mt-4">
+    <button class="btn btn-primary" id="swapButton" disabled>Swap Selected</button>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    window.ROOM_CODE = "{{ room.code }}";
+</script>
+<script src="{% static 'game.js' %}"></script>
+{% endblock %}
+

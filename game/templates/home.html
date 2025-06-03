@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="text-center">
+    <h1 class="mb-4">Welcome to CODE</h1>
+    <p class="lead">A multiplayer card-swap game. Be the first to collect the letters <strong>C, O, D, E</strong> to win!</p>
+    
+    {% if user.is_authenticated %}
+    <a href="{% url 'create_room' %}" class="btn btn-success btn-lg mt-4">Create Game</a>
+    {% else %}
+    <a href="{% url 'login' %}?next={% url 'create_room' %}" class="btn btn-success btn-lg mt-4">Create Game</a>
+    {% endif %}
+
+    <hr class="my-4">
+    <form method="GET" action="{% url 'login' %}" onsubmit="event.preventDefault(); joinGame();">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <input id="roomCodeInput" type="text" class="form-control" placeholder="Enter room code" required>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Join Game</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+function joinGame() {
+    const code = document.getElementById("roomCodeInput").value.trim().toUpperCase();
+    if (code.length === 6) {
+        window.location.href = `/join/${code}/`;
+    } else {
+        alert("Room code must be 6 characters.");
+    }
+}
+</script>
+{% endblock %}
