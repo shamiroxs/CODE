@@ -27,6 +27,12 @@
 
 <button id="start-game" class="btn btn-success">Start Game</button>
 
+{% if not is_host %}
+<button id="exit-room" class="btn btn-primary">Exit Room</button>
+{% else %}
+<a class="btn btn-primary" href="{% url 'reset_game' code %} ">Delete Room</a>
+{% endif %}
+
 <script>
     const ROOM_CODE = "{{ code }}";
 </script>

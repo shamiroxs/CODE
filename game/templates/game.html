@@ -2,14 +2,21 @@
 {% load static %}
 
 {% block content %}
-<h3>Welcome, {{ player.user.username }}!</h3>
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <h3 class="mb-0">Welcome, {{ player.user.username }}!</h3>
+    {% if is_host %}
+    <a class="btn btn-success btn-sm" href="{% url 'reset_game' room.code %} ">Delete Room</a>
+    {% endif %}
+</div>
+
 <h2 class="text-center mb-4">Room Code: {{ room.code }}</h2>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <strong>Turn:</strong> 
+
+    <div id="turn-id">   
     </div>
-    <div id="timer" class="badge bg-warning text-dark p-2 fs-5">10</div>
+    <div id="timer" class="badge bg-warning text-dark p-2 fs-5">-</div>
     <div>
         <strong>Status:</strong> {{ room.status|capfirst }}
     </div>

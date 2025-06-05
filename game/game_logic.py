@@ -1,26 +1,53 @@
 from .utils import shuffle_deck
-from .models import Player, GameLog
+from .models import Player
 from django.utils import timezone
 
+def get_next_player(players, current_player):
+    player_list = list(players.order_by('id')) 
+    try:
+        current_index = player_list.index(current_player)
+    except ValueError:
+        return None
+    next_index = (current_index + 1) % len(player_list)
+    return player_list[next_index]
+
 def start_game(room):
-    deck = shuffle_deck()
     players = list(Player.objects.filter(room=room))
     num_players = len(players)
+    deck = shuffle_deck(num_players)
     hand_size = 4
+    
+    hands = []
+    
+    while True:
+        deck = shuffle_deck(num_players)
+        valid = True
+
+        existing_hands = set()
+        for i in range(num_players):
+            hand = tuple(deck[i * hand_size: (i + 1) * hand_size])
+            if hand in existing_hands or len(set(hand)) > 2:
+                valid = False
+                break
+            hands.append(hand)
+
+        if valid:
+            break
     
     # Deal cards to each player
     for i, player in enumerate(players):
-        player.hand = deck[i * hand_size: (i + 1) * hand_size]
+        # player.hand = deck[i * hand_size: (i + 1) * hand_size]
+        player.hand = hands[i]
         player.is_turn = (i == 0)
         player.has_won = False
         player.save()
 
-    room.table_cards = deck[num_players * hand_size: num_players * hand_size + 4]
+    table_card_count = 2 * num_players
+    room.table_cards = deck[num_players * hand_size: num_players * hand_size + table_card_count]
+
     room.current_turn = 0
     room.status = 'playing'
     room.save()
-
-    GameLog.objects.create(room=room, action="Game started.", timestamp=timezone.now())
 
 def swap_card(player, room, hand_index, table_index):
     hand = player.hand
@@ -42,14 +69,11 @@ def swap_card(player, room, hand_index, table_index):
         p.is_turn = (i == next_index)
         p.save()
 
-    GameLog.objects.create(room=room, action=f"{player.user.username} swapped cards.", timestamp=timezone.now())
-
     if check_win(player):
         player.has_won = True
         player.save()
         room.status = 'finished'
         room.save()
-        GameLog.objects.create(room=room, action=f"{player.user.username} won the game!", timestamp=timezone.now())
         return True
 
     return False
@@ -66,6 +90,7 @@ def reset_game(room):
         player.save()
     room.table_cards = []
     room.current_turn = 0
-    room.status = 'waiting'
+    room.status = 'reset'
     room.save()
-    GameLog.objects.create(room=room, action="Game reset.", timestamp=timezone.now())
+    
+    room.delete()

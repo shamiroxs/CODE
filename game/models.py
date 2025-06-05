@@ -17,8 +17,3 @@ class Room(models.Model):
     current_turn = models.IntegerField(default=0)
     host = models.ForeignKey(User, on_delete=models.CASCADE, related_name='hosted_rooms', null=True)
     status = models.CharField(max_length=20, default='waiting')
-
-class GameLog(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    action = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)

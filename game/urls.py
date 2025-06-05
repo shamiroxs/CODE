@@ -19,4 +19,8 @@ urlpatterns = [
     path('api/room/<str:code>/swap/', views.swap_card_view, name='swap_card'),
     path('api/reset/<str:code>/', views.reset_game_view, name='reset_game'),
     
+    path('api/room/<str:room_code>/timeout/', views.timeout_turn, name='timeout_turn'),
+    path('api/endgame/<str:code>/', views.game_end, name='game_end'),
+    path('exit/<str:code>/', views.exit_room, name='exit_room'),
+
 ]

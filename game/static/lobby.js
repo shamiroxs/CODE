@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const playerListElement = document.getElementById('player-list');
     const startGameButton = document.getElementById('start-game');
+    const exitRoomButton = document.getElementById('exit-room');
 
     let isOwner = false;
 
@@ -8,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`/api/room/${ROOM_CODE}/status/`);
             if (!response.ok) {
+            	if (response.status === 404) {
+        	    throw new Error('Page not found (404)');
+        	}
                 throw new Error('Failed to fetch room status.');
             }
             const data = await response.json();
@@ -18,6 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Error:', error);
+            
+            if (error.message.includes('404')) {
+        	window.location.href = '/';
+    	    }
         }
     }
 
@@ -39,7 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (players.length >= 3 && isOwner) {
             startGameButton.disabled = false;
-            document.getElementById('hostmsg').innerHTML = "";
+            if(isOwner)
+            {
+            	document.getElementById('hostmsg').innerHTML = "";
+            }
         } else {
             startGameButton.disabled = true;
             if(isOwner)
@@ -47,6 +58,29 @@ document.addEventListener('DOMContentLoaded', () => {
             	document.getElementById('hostmsg').innerHTML = "You need at least three players to start playing. <br>Waiting for other players to join...";
             }
         }
+    }
+    if (exitRoomButton) {
+    exitRoomButton.addEventListener('click', async () => {
+        try {
+            const response = await fetch(`/exit/${ROOM_CODE}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCSRFToken(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            });
+            if (!response.ok) {
+            	if (response.status === 404) {
+        	    throw new Error('Page not found (404)');
+        	}
+                alert('Failed to start game.');
+            }
+        } catch (error) {
+            console.error('Start error:', error);
+        }
+        window.location.href = '/';
+    });
     }
 
     startGameButton.addEventListener('click', async () => {
@@ -62,10 +96,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 window.location.href = `/game/${ROOM_CODE}/`;
             } else {
+            	if (response.status === 404) {
+        	    throw new Error('Page not found (404)');
+        	}
                 alert('Failed to start game.');
             }
         } catch (error) {
             console.error('Start error:', error);
+            
+            if (error.message.includes('404')) {
+        	window.location.href = '/';
+    	    }
         }
     });
 

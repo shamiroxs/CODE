@@ -4,11 +4,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableCards = document.getElementById('table-cards');
     const timerDisplay = document.getElementById('timer');
     const swapButton = document.getElementById('swapButton');
-    const turnIndicator = document.querySelector('div strong');
+    const turnIndicator = document.getElementById('turn-id');
     const winMessage = document.querySelector('.alert-success');
 
     let selectedHandCard = null;
     let selectedTableCard = null;
+    
+    let selectedHandIndex = null;
+    let selectedTableIndex = null;
+    
     let timer = 10;
     let timerInterval = null;
     let isPlayerTurn = false;
@@ -31,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 playerHand.querySelectorAll('.selectable-card').forEach(c => c.classList.remove('border-primary'));
                 card.classList.add('border', 'border-primary');
                 selectedHandCard = card.dataset.card;
+                selectedHandIndex = parseInt(card.dataset.index);
                 checkSwapReady();
             });
         });
@@ -42,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tableCards.querySelectorAll('.selectable-card').forEach(c => c.classList.remove('border-success'));
                 card.classList.add('border', 'border-success');
                 selectedTableCard = card.dataset.card;
+                selectedTableIndex = parseInt(card.dataset.index);
                 checkSwapReady();
             });
         });
@@ -64,8 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     'X-CSRFToken': getCSRFToken()
                 },
                 body: JSON.stringify({
-                    hand_card: selectedHandCard,
-                    table_card: selectedTableCard
+                    hand_index: selectedHandIndex,
+    		    table_index: selectedTableIndex
                 })
             });
             
@@ -98,8 +104,27 @@ document.addEventListener('DOMContentLoaded', () => {
             timerDisplay.textContent = timer;
             if (timer <= 0) {
                 clearInterval(timerInterval);
-                swapButton.disabled = true;
-                alert("⏱ Time's up! Turn ended.");
+                timerDisplay.textContent = 'Time UP!';
+                
+                fetch(`/api/room/${ROOM_CODE}/timeout/`, {
+        		method: 'POST',
+        		headers: {
+            		'X-CSRFToken': getCSRFToken(),
+    		    	},
+    		})
+    		.then(response => {
+        		if (!response.ok) {
+            		console.error("Failed to notify server about timeout.");
+        		}
+        		return response.json();
+    		})
+    		.then(data => {
+	        	console.log('Turn ended due to timeout:', data);
+        		fetchGameState(); 
+    		})
+		.catch(error => {
+	        console.error("Error in timeout request:", error);
+	    	});
                
             }
         }, 1000);
@@ -107,27 +132,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function stopTimer() {
         clearInterval(timerInterval);
-        timerDisplay.textContent = '-';
+        
+        setTimeout(() => {
+            	timerDisplay.textContent = '-';
+            }, 1000);
     }
-
+    
     async function fetchGameState() {
         try {
             const response = await fetch(`/api/room/${ROOM_CODE}/status/`);
-            if (!response.ok) throw new Error('Failed to fetch game state');
-
+            if (!response.ok) {
+        	if (response.status === 404) {
+        	    throw new Error('Page not found (404)');
+        	}
+        	throw new Error(`Failed to fetch game state: ${response.status}`);
+   	    }
             const data = await response.json();
             
+            if (data.redirect) {
+            	window.location.href = data.redirect_url;
+            	console.log(data.redirect_url);
+            	return;
+            }
+            
             const currentPlayer = data.players.find(player => player.username === data.current_user);
+            let currentTurnPlayer = data.players.find(player => player.is_turn === true);
 
-            updateTableCards(data.table_cards);                       
-            updateTurn(currentPlayer.username);
+            updateTableCards(data.table_cards); 
+            //updateTurn(currentTurnPlayer.username);
 	    updatePlayerHand(currentPlayer.hand);
 	    updateWinStatus(currentPlayer.has_won);
+	    
+	    if (currentTurnPlayer) {
+		updateTurn(currentTurnPlayer.username);
+	    } else {
+    		console.warn("No current turn player found in data.players.");
+    		
+    		setTimeout(() => {
+                window.location.href = `/join/${ROOM_CODE}/`;
+                fetch(`/api/endgame/${ROOM_CODE}/`, {
+        	    method: 'GET',
+        	})
+        	.then(response => {
+        	    if (!response.ok) {
+                	throw new Error("Failed to reset game");
+            	    }
+        	})
+        	.catch(error => {
+        	    console.error('Reset error:', error);
+        	});
+            }, 3000);
+	    }
+	    
+	    if (data.winner_username && data.winner_username !== data.current_user) {
+    		showWinnerMessage(data.winner_username);
+	    }
+
 
             isPlayerTurn = data.your_turn;
             if (isPlayerTurn && !data.players.has_won) {
                 swapButton.disabled = !(selectedHandCard && selectedTableCard);
-                startTimer(10);
+                startTimer(6);
             } else {
                 swapButton.disabled = true;
                 stopTimer();
@@ -135,19 +200,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Error updating game state:', error);
+            
+            if (error.message.includes('404')) {
+        	window.location.href = '/';
+    	    }
         }
     }
 
     function updateTurn(username) {
-        turnIndicator.textContent = username;
+        turnIndicator.innerHTML = '<strong>Turn:</strong> ' + username;
     }
+
 
     function updateTableCards(cards) {
         tableCards.innerHTML = '';
-        cards.forEach(card => {
+        cards.forEach((card, index) => {
             const div = document.createElement('div');
             div.className = 'card m-2 text-center p-3 selectable-card';
             div.dataset.card = card;
+            div.dataset.index = index;
             div.textContent = card;
             tableCards.appendChild(div);
         });
@@ -156,10 +227,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updatePlayerHand(cards) {
         playerHand.innerHTML = '';
-        cards.forEach(card => {
+        cards.forEach((card, index) => {
             const div = document.createElement('div');
             div.className = 'card m-2 text-center p-3 selectable-card';
             div.dataset.card = card;
+            div.dataset.index = index;
             div.textContent = card;
             playerHand.appendChild(div);
         });
@@ -176,11 +248,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 alertDiv.textContent = '🎉 Congratulations! You won the game!';
                 playerHand.parentNode.insertBefore(alertDiv, playerHand);
             }
+            //add fetch for winning
             swapButton.disabled = true;
             stopTimer();
+            
+            setTimeout(() => {
+            	window.location.href = `/join/${ROOM_CODE}/`;
+            	
+            }, 3000);
         }
     }
+    
+    function showWinnerMessage(username) {
+        if (!document.querySelector('.alert-info')) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-info text-center fs-4';
+            alertDiv.textContent = `🏆 ${username} has won the game!`;
+            playerHand.parentNode.insertBefore(alertDiv, playerHand);
+        
+            stopTimer();
+            swapButton.disabled = true;
+
+            // Redirect after short delay
+            setTimeout(() => {
+                window.location.href = `/join/${ROOM_CODE}/`;
+                fetch(`/api/endgame/${ROOM_CODE}/`, {
+        	    method: 'GET',
+        	})
+        	.then(response => {
+        	    if (!response.ok) {
+                	throw new Error("Failed to reset game");
+            	    }
+        	})
+        	.catch(error => {
+        	    console.error('Reset error:', error);
+        	});
+            }, 3000);
+    }
+}
+
 
     fetchGameState();
-    setInterval(fetchGameState, 11000); 
+    setInterval(fetchGameState, 6500); 
 });
