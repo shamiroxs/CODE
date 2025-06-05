@@ -41,8 +41,7 @@ This isn’t a game engine or a plug-and-play front-end. I created and integrate
 1. **Game state management**: The game keeps track of each player's hand, the shared table cards, whose turn it is, and whether anyone has won.
 2. **Synchronization**: Multiple clients poll the server, and redirects happen based on the shared room state. This mimics real-time game updates without using WebSockets.
 3. **Host-based authority**: Only the room creator can start the game, but all players automatically join the game screen when it begins.
-4. **Custom logic encapsulation**: I decoupled view logic from core game mechanics via `game_logic.py`, improving modularity and clarity.
-5. **Dynamic frontend interactivity**: Players click to swap cards, a timer counts down, and victory is immediately detected and announced all without page reloads.
+4. **Dynamic frontend interactivity**: Players click to swap cards, a timer counts down, and victory is immediately detected and announced all without page reloads.
 
 It is a **full system** simulating multiplayer dynamics using Django and JavaScript alone.
 
