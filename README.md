@@ -10,6 +10,18 @@ This project was not only about building a game, it was about solving a real-wor
 
 ---
 
+## Snapshots
+
+![Alt text](images/1.png)
+![Alt text](images/2.png)
+![Alt text](images/3.png)
+
+<a href="https://youtu.be/lF_DLCy6PEA" target="_blank">
+  <img src="https://img.shields.io/badge/Watch%20on-YouTube-red?logo=youtube&style=for-the-badge" alt="Watch on YouTube"/>
+</a>
+
+---
+
 ## Distinctiveness and Complexity
 
 ### Why this project is distinctive:
@@ -33,18 +45,6 @@ This isn’t a game engine or a plug-and-play front-end. I created and integrate
 5. **Dynamic frontend interactivity**: Players click to swap cards, a timer counts down, and victory is immediately detected and announced all without page reloads.
 
 It is a **full system** simulating multiplayer dynamics using Django and JavaScript alone.
-
----
-
-## Snapshots
-
-![Alt text](images/1.png)
-![Alt text](images/2.png)
-![Alt text](images/3.png)
-
-<a href="https://youtu.be/lF_DLCy6PEA" target="_blank">
-  <img src="https://img.shields.io/badge/Watch%20on-YouTube-red?logo=youtube&style=for-the-badge" alt="Watch on YouTube"/>
-</a>
 
 ---
 
