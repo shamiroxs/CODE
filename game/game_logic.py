@@ -17,11 +17,10 @@ def start_game(room):
     deck = shuffle_deck(num_players)
     hand_size = 4
     
-    hands = []
-    
     while True:
         deck = shuffle_deck(num_players)
         valid = True
+        hands = []
 
         existing_hands = set()
         for i in range(num_players):
@@ -30,13 +29,13 @@ def start_game(room):
                 valid = False
                 break
             hands.append(hand)
+            existing_hands.add(hand)
 
         if valid:
             break
     
     # Deal cards to each player
     for i, player in enumerate(players):
-        # player.hand = deck[i * hand_size: (i + 1) * hand_size]
         player.hand = hands[i]
         player.is_turn = (i == 0)
         player.has_won = False
