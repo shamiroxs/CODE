@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: code-game
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn projectname.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: codegame.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: code-db
+          property: connectionString

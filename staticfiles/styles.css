@@ -1,0 +1,81 @@
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header, .room-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.room-header h2 {
+  font-size: 1.5rem;
+  margin: 10px 0;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.card {
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.card:hover {
+  background-color: #e9f5ff;
+  transform: translateY(-3px);
+}
+
+.card.selected {
+  border-color: #007bff;
+  background-color: #dbefff;
+}
+
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.timer, .turn-indicator {
+  font-weight: bold;
+  text-align: center;
+  margin: 15px 0;
+  font-size: 1.1rem;
+}
+
+.winner-message {
+  text-align: center;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  padding: 10px;
+  margin-top: 20px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .card {
+    font-size: 1.2rem;
+    padding: 16px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
