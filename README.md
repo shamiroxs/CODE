@@ -25,11 +25,19 @@ This project was not only about building a game, it was about solving a real-wor
 ## Distinctiveness and Complexity
 ### Distinctiveness:
 
-This project is an interactive, real-time multiplayer game featuring custom mechanics and a fully engineered game loop. I designed and implemented the turn-based logic, player specific hand visibility, game start coordination, win detection, and asynchronous status polling. Inspired by my cultural background, I translated the concept into a web-based format.
+What makes this project stand out is its combination of real-time multiplayer game logic, custom turn-based mechanics, and a fully web-native architecture without using WebSockets or game engines. 
+
+Rather than building a static CRUD app or a messaging clone, as many projects in the course tend to be, this project required designing and implementing a full game engine from scratch. It involved real-time coordination and polling logic between players, dynamic win detection, and UI updates per player.
+
+Additional features included host-controlled game start logic and smooth handling of turn order and card exchange in a multiplayer environment. This is a self-designed game with completely original ideas and rules.
 
 ### Complexity:
 
-This project simulates a full multiplayer game system using only Django and JavaScript. It manages complex game state (hands, turns, win conditions), synchronizes players via polling without WebSockets, and enforces host-based authority. The dynamic frontend allows real-time interactions like card swapping and timed turns, with instant win detection, all without page reloads.
+This project is a full multiplayer game system using only Django and JavaScript, managing a surprising amount of complexity behind the scenes. It features multiple interacting models such as Room and Player, and handles dynamic game state including players’ hands, turns, deck, and table cards.
+
+Real-time player synchronization is achieved through repeated polling and custom JSON views, eliminating the need for WebSockets. A REST-style API supports actions like polling and card swapping. The dynamic frontend enables real-time interactions such as card swapping, timed turns, and instant win detection, all without page reloads.
+
+The system also enforces host-based authority, preventing double starts, ensuring a single host, validating card swaps, and checking victory conditions in real time. Impressively, all of this is accomplished without Django Channels, WebSockets, or third-party game frameworks—just pure Django, JavaScript, and thoughtfully structured logic.
 
 ---
 
