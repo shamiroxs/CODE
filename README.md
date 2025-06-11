@@ -2,7 +2,7 @@
 
 ## Overview
 
-**CODE** is a real-time multiplayer card game designed entirely for the web. Players join a virtual room and race to collect cards spelling out **C-O-D-E** through turn-based card swapping. It’s designed to be no downloads, no setups just a browser and an internet connection. Built using Django, JavaScript, and responsive design techniques, the game supports real-time play with room-based coordination, turn handling, and game state persistence.
+**CODE** is a real-time multiplayer card game designed entirely for the web. Players join a virtual room and race to collect cards spelling out **C-O-D-E** through turn-based card swapping. It is built using Django, JavaScript, and responsive design techniques, the game supports real-time play with room-based coordination, turn handling, and game state persistence.
 
 The inspiration for this project came from a traditional game called **Kozhithala**, which is popular in my hometown. Players write Malayalam letters on paper chits and compete to collect a specific word. I reimagined that analog game for a digital, globally accessible experience using English letters and a theme relevant to computer science students. The result is a modern, lightweight game that honors its roots while embracing new tech.
 
@@ -23,27 +23,13 @@ This project was not only about building a game, it was about solving a real-wor
 ---
 
 ## Distinctiveness and Complexity
+### Distinctiveness:
 
-### Why this project is distinctive:
+This project is an interactive, real-time multiplayer game featuring custom mechanics and a fully engineered game loop. I designed and implemented the turn-based logic, player specific hand visibility, game start coordination, win detection, and asynchronous status polling. Inspired by my cultural background, I translated the concept into a web-based format.
 
-Unlike traditional CS50 web projects (e.g., e-commerce, wiki, social network,..), this project **implements an interactive, real-time multiplayer game**. It combines back-end state management, front-end dynamic updates, and game logic coordination. it’s an engineered game loop handling:
+### Complexity:
 
-* Turn-based logic
-* Player-specific hand visibility
-* Game start coordination
-* Win condition detection
-* Asynchronous polling for status
-
-This isn’t a game engine or a plug-and-play front-end. I created and integrated the game loop, custom game mechanics, and multiplayer coordination myself. Moreover, the idea came from my cultural background, adapted into a web form.
-
-### Why it’s complex:
-
-1. **Game state management**: The game keeps track of each player's hand, the shared table cards, whose turn it is, and whether anyone has won.
-2. **Synchronization**: Multiple clients poll the server, and redirects happen based on the shared room state. This mimics real-time game updates without using WebSockets.
-3. **Host-based authority**: Only the room creator can start the game, but all players automatically join the game screen when it begins.
-4. **Dynamic frontend interactivity**: Players click to swap cards, a timer counts down, and victory is immediately detected and announced all without page reloads.
-
-It is a **full system** simulating multiplayer dynamics using Django and JavaScript alone.
+This project simulates a full multiplayer game system using only Django and JavaScript. It manages complex game state (hands, turns, win conditions), synchronizes players via polling without WebSockets, and enforces host-based authority. The dynamic frontend allows real-time interactions like card swapping and timed turns, with instant win detection, all without page reloads.
 
 ---
 
