@@ -124,8 +124,9 @@ python manage.py test
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/yourusername/code-game.git
-   cd code-game
+   git clone https://github.com/shamiroxs/CODE.git
+   cd CODE
+   git checkout master
    ```
 
 2. **Create virtual environment and install dependencies**:
