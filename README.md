@@ -144,6 +144,7 @@ python manage.py test
    ```
 
 4. **Access in your browser**:
+
    Open `http://127.0.0.1:8000/` in your browser and follow these steps:
 
    log in or register an account, then create a new room or join an existing one. Once in the lobby, wait for other players to join. When everyone is ready, start the game. From there, swap cards strategically and race to be the first to spell **C-O-D-E**!
