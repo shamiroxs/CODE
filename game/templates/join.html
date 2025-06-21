@@ -33,8 +33,9 @@
 <a class="btn btn-primary" href="{% url 'reset_game' code %} ">Delete Room</a>
 {% endif %}
 <br>
-
-<img src="{% static 'tutorial.png' %}" alt="Tutorial Image">
+<br>
+<h2>Tutorial:</h2>
+<img src="{% static 'tutorial.png' %}" alt="Tutorial Image" width="400">
 
 <script>
     const ROOM_CODE = "{{ code }}";
