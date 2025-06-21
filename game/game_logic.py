@@ -39,9 +39,13 @@ def start_game(room):
         if valid:
             break
     
+    order_map = {'C': 0, 'O': 1, 'D': 2, 'E': 3}
+    
     # Deal cards to each player
     for i, player in enumerate(players):
-        player.hand = hands[i]
+        unsorted_hand = hands[i]
+        sorted_hand = tuple(sorted(unsorted_hand, key=lambda card: order_map.get(str(card)[0], 999)))
+        player.hand = sorted_hand
         player.is_turn = (i == 0)
         player.has_won = False
         player.save()
