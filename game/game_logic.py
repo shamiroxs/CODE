@@ -21,15 +21,18 @@ def start_game(room):
         deck = shuffle_deck(num_players)
         valid = True
         hands = []
-
+        
+        hand_chunks = [tuple(deck[i * hand_size : (i + 1) * hand_size]) for i in range(num_players)]
+        
+        random.shuffle(hand_chunks)
+        
         existing_hands = set()
-        for i in range(num_players):
-            hand = tuple(deck[i * hand_size: (i + 1) * hand_size])
+        for hand in hand_chunks:
             if hand in existing_hands or len(set(hand)) > 2:
                 valid = False
                 break
-            hands.append(hand)
             existing_hands.add(hand)
+            hands.append(hand)
 
         if valid:
             break
