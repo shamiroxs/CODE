@@ -26,8 +26,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-secret-key")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-#ALLOWED_HOSTS = ['code-game-h4f3.onrender.com']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['code-game-h4f3.onrender.com']
+#ALLOWED_HOSTS = ['*']
 
 
 # Application definition
